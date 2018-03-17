@@ -7,15 +7,15 @@ import random
 import level
 from display import Display
 
-WIDTH = 40
-HEIGHT = 20
-
-p1 = objects.Character(10, 10, "@", 1, [HEIGHT, WIDTH])
-m1 = objects.Monster(random.randint(0, HEIGHT), random.randint(0, WIDTH), "J", 2, [HEIGHT, WIDTH])
-m2 = objects.Monster(random.randint(0, HEIGHT), random.randint(0, WIDTH), "T", 3, [HEIGHT, WIDTH])
-
+WIDTH = 80
+HEIGHT = 40
 lvl = level.Level(HEIGHT, WIDTH)
-lvl.wholevel["characters"] = [m1, m2, p1]
+
+p1 = objects.Character(10, 10, "@", 0, [HEIGHT, WIDTH])
+lvl.wholevel["characters"].append(p1)
+for i in range(8):
+    lvl.wholevel["characters"].append(objects.Monster(random.randint(0, HEIGHT), random.randint(0, WIDTH), "T", random.randint(1, 8), [HEIGHT, WIDTH]))
+
 
 keybinds = {}   # y  x
 keybinds["k"] = [-1, 0]

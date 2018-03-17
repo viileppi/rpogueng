@@ -19,6 +19,7 @@ class Level:
         self.y = int(h / 2)
         self.x = int(w / 2)
         for i in range(int(h * w / 8)):
+            # generate tiles from color range 33...64
             self.level[y][x] = objects.Tile(y, x, chr(random.randint(33, 64)), curses.A_DIM, [self.h, self.w])
             self.level[y][x].blocking = True
             y = (y + self.diry[random.randint(0, len(self.diry) - 1)]) % self.h
@@ -40,6 +41,11 @@ class Level:
             for c in self.wholevel[keys]:
                 if c.y == y and c.x == x:
                     return c
+
+    def wheres_waldo(self):
+        ''' returns players coordinates [y, x] '''
+        return [self.wholevel["characters"][0].y, self.wholevel["characters"][0].x]
+
 
 
 # foo = Level(8, 8)
