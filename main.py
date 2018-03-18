@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import os
 import curses
 from curses import wrapper
 import pickle
@@ -7,14 +8,20 @@ import random
 import level
 from display import Display
 
-WIDTH = 80
-HEIGHT = 40
+def main(scr):
+    ''' get the size of the console '''
+    WIDTH = scr.getmaxyx()[1] - 1
+    HEIGHT = scr.getmaxyx()[0] - 1
+    return WIDTH, HEIGHT
+
+WIDTH, HEIGHT = wrapper(main)
+
 lvl = level.Level(HEIGHT, WIDTH)
 
 p1 = objects.Character(10, 10, "@", 0, [HEIGHT, WIDTH])
 lvl.wholevel["characters"].append(p1)
 for i in range(8):
-    lvl.wholevel["characters"].append(objects.Monster(random.randint(0, HEIGHT), random.randint(0, WIDTH), "T", random.randint(1, 8), [HEIGHT, WIDTH]))
+    lvl.wholevel["characters"].append(objects.Monster(random.randint(0, HEIGHT), random.randint(0, WIDTH), chr(random.randint(65, 100)), random.randint(1, 8), [HEIGHT, WIDTH]))
 
 
 keybinds = {}   # y  x

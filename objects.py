@@ -11,12 +11,14 @@ class Object:
         self.blocking = False
         self.char = c
         self.color = color
-        self.alive = None
-        self.action = ""
+        self.alive = True
 
     def position(self):
         ''' return position [y, x] '''
         return [self.y, self.x]
+
+    def suicide(self):
+        self.alive = False
 
 
 class Character(Object):
@@ -39,28 +41,26 @@ class Character(Object):
             # for testing-purpose change the character on collision
             self.x = self.old_x
             self.y = self.old_y
-            if str(type(foo))[:18] == "<class 'objects.Mo":
-                self.action = "beating the dead horse"
-            else:
-                self.action = " "
+            foo.alive = False
         else:
             self.x = newx
             self.y = newy
-        return self.action
 
 class Monster(Character):
     ''' NPC-class '''
     def move(self, level):
         ''' moves the instance and checks for blocking (bool)
             with added AI '''
-        if level.wheres_waldo()[0] < self.y:
-            self.direction[0] = -1
-        if level.wheres_waldo()[0] > self.y:
-            self.direction[0] = 1
-        if level.wheres_waldo()[1] < self.x:
-            self.direction[1] = -1
-        if level.wheres_waldo()[1] > self.x:
-            self.direction[1] = 1
+        player = level.wheres_waldo()
+        if abs(player[0] - self.y) < 8 and abs(player[1] - self.x) < 8:
+            if player[0] < self.y:
+                self.direction[0] = -1
+            if player[0] > self.y:
+                self.direction[0] = 1
+            if player[1] < self.x:
+                self.direction[1] = -1
+            if player[1] > self.x:
+                self.direction[1] = 1
         self.alive = True
         self.old_x = self.x
         self.old_y = self.y
@@ -75,24 +75,42 @@ class Monster(Character):
             # for testing-purpose change the character on collision
             self.x = self.old_x
             self.y = self.old_y
-            if str(type(foo))[:18] == "<class 'objects.Mo":
-                foo.char = chr(ord(foo.char) + 1)
+            # if str(type(foo))[:18] == "<class 'objects.Mo":
+            #     foo.char = chr(ord(foo.char) + 1)
         else:
             self.x = newx
             self.y = newy
-        return self.action
 
 class Tile(Object):
     ''' tile class '''
-    def __init__(self, y, x, c, color, maxyx):
+    def __init__(self, y, x, type_of, maxyx):
+        self.types = ["basic", "structure", "plant", "water"]
+        skeleton = {}
         self.maxyx = maxyx  # y,x
         self.x = x
         self.y = y
-        self.direction = [0, 0]
         self.blocking = True
-        self.char = c
-        self.color = random.randint(25, 45)
+        self.color = 0
         self.alive = False
+        if type_of == "structure":
+            self.char = "#"
+            self.color = random.randint(52, 62)
+            self.blocking = True
+        if type_of == "plant":
+            self.char = "Y"
+            self.color = random.randint(32, 54)
+            self.blocking = True
+        if type_of == "water":
+            self.char = "~"
+            self.color = random.randint(18, 22)
+            self.blocking = False
+        else:
+            self.char = "."
+            self.color = 0
+            self.blocking = False
+
+
+
 
 
 class Item(Object):

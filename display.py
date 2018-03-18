@@ -26,6 +26,7 @@ class Display:
                 curses.init_pair((i), i, 0)
         curses.curs_set(0)
         user_input = ""
+        direction = [0, 0]
         action = " "
         while user_input != "q":
             # draw
@@ -33,8 +34,10 @@ class Display:
             for tile in self.lvl.wholevel["tiles"]:
                 stdscr.addstr(tile.y, tile.x, tile.char, curses.color_pair(tile.color))
             for char in self.lvl.wholevel["characters"]:
-                action = char.move(self.lvl)
+                char.move(self.lvl)
                 stdscr.addstr(char.y, char.x, char.char, curses.color_pair(char.color))
+                if char.alive == False:
+                    del char
             stdscr.addstr(0,0, action, curses.color_pair(1))
             stdscr.refresh()
             # input
