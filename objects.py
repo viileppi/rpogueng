@@ -27,7 +27,6 @@ class Character(Object):
     def move(self, level):
         ''' moves the instance and checks for blocking (bool)
             returns characters action (str) '''
-        self.alive = True
         self.old_x = self.x
         self.old_y = self.y
         newx = self.x
@@ -37,11 +36,12 @@ class Character(Object):
         newy = min(self.maxyx[0], newy + self.direction[0])
         newy = max(0, newy)
         foo = level.blocking(newy, newx)
-        if foo != None:
+        if foo != None and foo != self:
             # for testing-purpose change the character on collision
             self.x = self.old_x
             self.y = self.old_y
             foo.alive = False
+            foo.char = " "
         else:
             self.x = newx
             self.y = newy
@@ -61,7 +61,6 @@ class Monster(Character):
                 self.direction[1] = -1
             if player[1] > self.x:
                 self.direction[1] = 1
-        self.alive = True
         self.old_x = self.x
         self.old_y = self.y
         newx = self.x

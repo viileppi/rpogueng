@@ -48,6 +48,9 @@ class Level:
         ''' returns players coordinates [y, x] '''
         return [self.wholevel["characters"][0].y, self.wholevel["characters"][0].x]
 
+    def delete(self, name):
+        self.wholevel.pop(name)
+
 
 
 # foo = Level(8, 8)

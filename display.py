@@ -31,13 +31,16 @@ class Display:
         while user_input != "q":
             # draw
             stdscr.clear()
+            del_list = []
             for tile in self.lvl.wholevel["tiles"]:
                 stdscr.addstr(tile.y, tile.x, tile.char, curses.color_pair(tile.color))
-            for char in self.lvl.wholevel["characters"]:
+            for index, char in enumerate(self.lvl.wholevel["characters"]):
                 char.move(self.lvl)
                 stdscr.addstr(char.y, char.x, char.char, curses.color_pair(char.color))
                 if char.alive == False:
-                    del char
+                    del_list.append(index)
+            for char in del_list:
+                self.lvl.wholevel["characters"].pop(char)
             stdscr.addstr(0,0, action, curses.color_pair(1))
             stdscr.refresh()
             # input
