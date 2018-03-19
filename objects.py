@@ -11,13 +11,30 @@ class Object:
         self.direction = [0, 0]
         self.blocking = False
         self.char = c
-        self.color = random.randint(1, 7)
+        self.color = 0
         self.alive = True
         self.action = ""
         self.fight = skills.Skill(3)
         self.max_hp = 10
         self.hp = 10
+        self.sens = random.randint(8, 22)
         self.turns = 0
+        self.reaction = {-1: None,
+                         0: None,
+                         1: None}
+        self.act = ["fight", "flee", "ignore", "like"]
+        for key in self.reaction:
+            r = random.randint(0, 10)
+            if r < 5:
+                self.reaction[key] = self.act[0]    # fight
+            elif r >= 5 and r < 7:
+                self.reaction[key] = self.act[1]    # flee
+            elif r >= 7 and r < 9:
+                self.reaction[key] = self.act[2]    # ignore
+            elif r >= 9:
+                self.reaction[key] = self.act[3]    # like
+        self.reaction[-1] = "like"
+        self.state = self.reaction[0]
 
     def position(self):
         ''' return position [y, x] '''
@@ -50,6 +67,11 @@ class Character(Object):
             self.x = self.old_x
             self.y = self.old_y
             a, b = self.fight.roll(foo.fight.limit)
+            if self.state == "like":
+                self.state = "fight"
+            else:
+                self.state = "like"
+            #  self.state = self.reaction[-1]
             if a:
                 foo.hp -= b
                 self.action = str(b) + " damage"
@@ -64,13 +86,25 @@ class Character(Object):
             self.y = newy
             self.action = ""
 
+    def talk(self, level):
+        for y in range(-2, 2, 1):
+            for x in range(-2, 2, 1):
+                newx = self.x
+                newy = self.y
+                newx = min(self.maxyx[1], newx + x)
+                newx = max(0, newx)
+                newy = min(self.maxyx[0], newy + y)
+                newy = max(0, newy)
+                foo = level.blocking(newy, newx)
+                if foo != None and foo != self:
+                    foo.state = foo.reaction[1]
+
+
 class Monster(Character):
     ''' NPC-class '''
-    def move(self, level):
-        ''' moves the instance and checks for blocking (bool)
-            with added AI '''
+    def follow(self, level):
         player = level.wheres_waldo()
-        if abs(player[0] - self.y) < 8 and abs(player[1] - self.x) < 8:
+        if abs(player[0] - self.y) < self.sens and abs(player[1] - self.x) < self.sens:
             if player[0] < self.y:
                 self.direction[0] = -1
             if player[0] > self.y:
@@ -79,6 +113,37 @@ class Monster(Character):
                 self.direction[1] = -1
             if player[1] > self.x:
                 self.direction[1] = 1
+
+    def flee(self, level):
+        player = level.wheres_waldo()
+        if abs(player[0] - self.y) < self.sens and abs(player[1] - self.x) < self.sens:
+            if player[0] < self.y:
+                self.direction[0] = 1
+            if player[0] > self.y:
+                self.direction[0] = -1
+            if player[1] < self.x:
+                self.direction[1] = 1
+            if player[1] > self.x:
+                self.direction[1] = -1
+        else:
+            self.state = self.reaction[0]
+
+    def move(self, level):
+        ''' moves the instance and checks for blocking (bool)
+            with added AI '''
+        if self.state == "fight":
+            self.follow(level)
+            self.color = 1
+        if self.state == "like":
+            self.follow(level)
+            self.color = 10
+        if self.state == "flee":
+            self.flee(level)
+            self.color = 3
+        if self.state == "ignore":
+            self.direction[0] = random.randint(-1, 1)
+            self.direction[1] = random.randint(-1, 1)
+            self.color = 4
         self.old_x = self.x
         self.old_y = self.y
         newx = self.x
@@ -91,29 +156,20 @@ class Monster(Character):
         if foo != None and foo != self:
             self.x = self.old_x
             self.y = self.old_y
-            if self.fight.roll(foo.fight.limit):
-                foo.hp -= 2
-                self.action = "smack!"
-                if foo.hp < 1:
-                    foo.alive = False
-                    foo.char = " "
-                    self.action = "monster smash"
-            else:
-                self.action = "missed..."
+            if self.state == "fight":
+                if self.fight.roll(foo.fight.limit):
+                    foo.hp -= 2
+                    self.action = "smack!"
+                    if foo.hp < 1:
+                        foo.alive = False
+                        foo.char = " "
+                        self.action = "killed"
+                else:
+                    self.action = "missed..."
         else:
             self.x = newx
             self.y = newy
             self.action = ""
-
-# if foo != None:
-        #     # for testing-purpose change the character on collision
-        #     self.x = self.old_x
-        #     self.y = self.old_y
-        #     # if str(type(foo))[:18] == "<class 'objects.Mo":
-        #     #     foo.char = chr(ord(foo.char) + 1)
-        # else:
-        #     self.x = newx
-        #     self.y = newy
 
 class Tile(Object):
     ''' tile class '''

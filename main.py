@@ -8,14 +8,14 @@ import random
 import level
 from display import Display
 
-# def main(scr):
-#     ''' get the size of the console '''
-#     WIDTH = scr.getmaxyx()[1] - 1
-#     HEIGHT = scr.getmaxyx()[0] - 1
-#     return WIDTH, HEIGHT
-#
-# WIDTH, HEIGHT = wrapper(main)
-WIDTH, HEIGHT = 40, 20
+def main(scr):
+    ''' get the size of the console '''
+    WIDTH = scr.getmaxyx()[1] - 2
+    HEIGHT = scr.getmaxyx()[0] - 2
+    return WIDTH, HEIGHT
+
+WIDTH, HEIGHT = wrapper(main)
+# WIDTH, HEIGHT = 40, 20
 
 Map = level.Map(HEIGHT, WIDTH)
 
@@ -28,6 +28,9 @@ keybinds["y"] = [-1, -1]
 keybinds["u"] = [-1, 1]
 keybinds["b"] = [1, -1]
 keybinds["n"] = [1, 1]
+keybinds["."] = [0, 0]
+keybinds["m"] = [0, 0, "m"]
+keybinds["t"] = [0, 0, "t"]
 
 foo = Display(WIDTH, HEIGHT, keybinds, Map)
 

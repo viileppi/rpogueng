@@ -15,9 +15,20 @@ class Display:
         self.Map = lvl
         self.lvl = self.Map.Map[0][0]
 
+    def showMap(self):
+        minimap = curses.newwin(self.h + 1, self.w + 1, 1, 0)
+        # draw minimap
+        for line in self.Map.Map:
+            for col in self.Map.Map[line]:
+                minimap.addstr(self.half_h + line, self.half_w + col, "#", curses.color_pair(131))
+        minimap.addstr(self.Map.y + self.half_h, self.Map.x + self.half_w, "@", curses.color_pair(11))
+        minimap.addstr(1,1, "Map", curses.color_pair(130))
+        minimap.border()
+        minimap.refresh()
+        minimap.getkey()
+
     def main(self, mainwin):
         stdscr = mainwin.subwin(self.h + 1, self.w + 1, 1, 0)
-        minimap = mainwin.subwin(self.h + 1, self.w + 1, 1, self.w + 1)
         statuswin = mainwin.subwin(1,self.w, 0, 0)
         self.maxyx = stdscr.getmaxyx()
         self.half_h = int(self.h / 2)
@@ -30,31 +41,28 @@ class Display:
         curses.curs_set(0)
         user_input = ""
         direction = [0, 0]
-        action = " "
+        action = "foo"
+
         while user_input != "q":
+            # show actions
+            action = self.lvl.characters[0].action
             stdscr.clear()
             del_list = []
-            # draw minimap
-            for line in self.Map.Map:
-                for col in self.Map.Map[line]:
-                    minimap.addstr(self.half_h + line, self.half_w + col, "#")
-            minimap.addstr(self.Map.y + self.half_h, self.Map.x + self.half_w, "@")
-            minimap.border()
-            minimap.refresh()
             # draw tiles
             for tile in self.lvl.tiles:
                 stdscr.addstr(tile.y, tile.x, tile.char, curses.color_pair(tile.color))
             # draw characters
             for index, char in enumerate(self.lvl.characters):
                 char.move(self.lvl)
-                stdscr.addstr(char.y, char.x, char.char, curses.color_pair(char.color))
+                try:
+                    stdscr.addstr(char.y, char.x, char.char, curses.color_pair(char.color))
+                except curses.error:
+                    pass
                 if char.alive == False:
                     del_list.append(index)
             # delete killed characters
             for char in del_list:
                 self.lvl.characters.pop(char)
-            # show actions
-            action = self.lvl.characters[0].action
             statuswin.clear()
             statuswin.addstr(0,0, "HP:" + str(int(self.lvl.characters[0].hp)) + "|" + action)
             stdscr.border()
@@ -64,10 +72,14 @@ class Display:
             user_input = stdscr.getkey()
             try:
                 direction = self.keybinds[user_input]
+                if len(direction) == 3:
+                    if direction[2] == "m":
+                        self.showMap()
+                    if direction[2] == "t":
+                        self.lvl.characters[0].talk(self.lvl)
             except KeyError:
                 stdscr.addstr(0, 0, "Invalid key: " + user_input)
             self.lvl.characters[0].direction = direction
-
             # move to new levels or make such
             if self.lvl.characters[0].x <= 1:
                 self.Map.x -= 1
@@ -91,7 +103,7 @@ class Display:
             # check if player is still alive
             if not self.lvl.characters[0].alive:
                 for i in range(self.h):
-                    stdscr.addstr(i, i, "GAME OVER!!!")
+                    stdscr.addstr(self.half_h, self.half_w, "GAME OVER!!!")
                     stdscr.refresh()
-                    curses.napms(50)
+                curses.napms(2000)
                 user_input = "q"
