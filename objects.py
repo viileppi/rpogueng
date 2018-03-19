@@ -104,6 +104,27 @@ class Monster(Character):
     ''' NPC-class '''
     def follow(self, level):
         player = level.wheres_waldo()
+        foo = level.hostiles(self.y, self.x)
+        if foo != None and abs(foo.y - self.y) < self.sens and abs(foo.x - self.x) < self.sens:
+            if foo.y < self.y:
+                self.direction[0] = -1
+            if foo.y > self.y:
+                self.direction[0] = 1
+            if foo.x < self.x:
+                self.direction[1] = -1
+            if foo.x > self.x:
+                self.direction[1] = 1
+        elif abs(player[0] - self.y) < self.sens and abs(player[1] - self.x) < self.sens:
+            if player[0] < self.y:
+                self.direction[0] = -1
+            if player[0] > self.y:
+                self.direction[0] = 1
+            if player[1] < self.x:
+                self.direction[1] = -1
+            if player[1] > self.x:
+                self.direction[1] = 1
+    def attack(self, level):
+        player = level.wheres_waldo()
         if abs(player[0] - self.y) < self.sens and abs(player[1] - self.x) < self.sens:
             if player[0] < self.y:
                 self.direction[0] = -1
@@ -127,12 +148,13 @@ class Monster(Character):
                 self.direction[1] = -1
         else:
             self.state = self.reaction[0]
+            self.direction = [0, 0]
 
     def move(self, level):
         ''' moves the instance and checks for blocking (bool)
             with added AI '''
         if self.state == "fight":
-            self.follow(level)
+            self.attack(level)
             self.color = 1
         if self.state == "like":
             self.follow(level)
@@ -157,6 +179,16 @@ class Monster(Character):
             self.x = self.old_x
             self.y = self.old_y
             if self.state == "fight":
+                if self.fight.roll(foo.fight.limit):
+                    foo.hp -= 2
+                    self.action = "smack!"
+                    if foo.hp < 1:
+                        foo.alive = False
+                        foo.char = " "
+                        self.action = "killed"
+                else:
+                    self.action = "missed..."
+            if self.state == "like" and foo.char != "@":
                 if self.fight.roll(foo.fight.limit):
                     foo.hp -= 2
                     self.action = "smack!"

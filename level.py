@@ -42,6 +42,14 @@ class Level:
                 if c.y == y and c.x == x:
                     return c
 
+    def hostiles(self, y, x):
+        ''' returns instance in given coordinates '''
+        for i in range(1, len(self.characters), 1):
+            c = self.characters[i]
+            if c.state == "fight":
+                if abs(c.y - y) < 4 and abs(c.x - x) < 4:
+                    return c
+
     def wheres_waldo(self):
         ''' returns players coordinates [y, x] '''
         return self.characters[0].y, self.characters[0].x
