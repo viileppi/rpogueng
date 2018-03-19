@@ -8,14 +8,14 @@ import random
 import level
 from display import Display
 
-def main(scr):
-    ''' get the size of the console '''
-    WIDTH = scr.getmaxyx()[1] - 2
-    HEIGHT = scr.getmaxyx()[0] - 2
-    return WIDTH, HEIGHT
-
-WIDTH, HEIGHT = wrapper(main)
-# WIDTH, HEIGHT = 40, 20
+# def main(scr):
+#     ''' get the size of the console '''
+#     WIDTH = scr.getmaxyx()[1] - 2
+#     HEIGHT = scr.getmaxyx()[0] - 2
+#     return WIDTH, HEIGHT
+#
+# WIDTH, HEIGHT = wrapper(main)
+WIDTH, HEIGHT = 40, 20
 
 Map = level.Map(HEIGHT, WIDTH)
 

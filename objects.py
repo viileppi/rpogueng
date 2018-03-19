@@ -67,14 +67,10 @@ class Character(Object):
             self.x = self.old_x
             self.y = self.old_y
             a, b = self.fight.roll(foo.fight.limit)
-            if self.state == "like":
-                self.state = "fight"
-            else:
-                self.state = "like"
             #  self.state = self.reaction[-1]
             if a:
                 foo.hp -= b
-                self.action = str(b) + " damage"
+                self.action = self.char + " makes " + str(b) + " damage"
                 if foo.hp < 1:
                     foo.alive = False
                     foo.char = " "
@@ -181,7 +177,7 @@ class Monster(Character):
             if self.state == "fight":
                 if self.fight.roll(foo.fight.limit):
                     foo.hp -= 2
-                    self.action = "smack!"
+                    self.action = self.char + " hits " + foo.char
                     if foo.hp < 1:
                         foo.alive = False
                         foo.char = " "
@@ -214,6 +210,9 @@ class Tile(Object):
         self.alive = False
         self.fight = skills.Skill(100)
         self.hp = 100
+        self.reaction = {-1: "ignore",
+                         0: "ignore",
+                         1: "ignore"}
 
         if type_of == 0:
             self.char = "|"

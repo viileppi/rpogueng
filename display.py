@@ -30,6 +30,8 @@ class Display:
     def main(self, mainwin):
         stdscr = mainwin.subwin(self.h + 1, self.w + 1, 1, 0)
         statuswin = mainwin.subwin(1,self.w, 0, 0)
+        logwin = mainwin.subwin(self.h + 1, self.w + 1, 1, self.w + 1)
+        logwin.scrollok(True)
         self.maxyx = stdscr.getmaxyx()
         self.half_h = int(self.h / 2)
         self.half_w = int(self.w / 2)
@@ -42,10 +44,10 @@ class Display:
         user_input = ""
         direction = [0, 0]
         action = "foo"
+        action_list = []
 
         while user_input != "q":
             # show actions
-            action = self.lvl.characters[0].action
             stdscr.clear()
             del_list = []
             # draw tiles
@@ -63,11 +65,18 @@ class Display:
             # delete killed characters
             for char in del_list:
                 self.lvl.characters.pop(char)
+            for meh in self.lvl.characters:
+                if meh.action != "":
+                    action_list.append(meh.action)
+            # iterate action_list and put them in to logwin
+            for entry in action_list:
+                logwin.addstr(entry + "\n")
             statuswin.clear()
             statuswin.addstr(0,0, "HP:" + str(int(self.lvl.characters[0].hp)) + "|" + action)
             stdscr.border()
             stdscr.refresh()
             statuswin.refresh()
+            logwin.refresh()
             # input
             user_input = stdscr.getkey()
             try:
