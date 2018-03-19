@@ -32,6 +32,9 @@ class Display:
             # draw
             stdscr.clear()
             del_list = []
+            for line in self.Map.Map:
+                for col in self.Map.Map[line]:
+                    stdscr.addstr(10 + line, 60 + col, "#")
             for tile in self.lvl.tiles:
                 stdscr.addstr(tile.y, tile.x, tile.char, curses.color_pair(tile.color))
             for index, char in enumerate(self.lvl.characters):
