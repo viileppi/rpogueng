@@ -3,7 +3,7 @@ import skills
 
 class Object:
     ''' color = 1...6 '''
-    def __init__(self, y, x, c, color, maxyx):
+    def __init__(self, y, x, c, maxyx):
         self.name = ""
         self.maxyx = maxyx  # y,x
         self.x = x
@@ -11,7 +11,7 @@ class Object:
         self.direction = [0, 0]
         self.blocking = False
         self.char = c
-        self.color = color
+        self.color = random.randint(1, 7)
         self.alive = True
         self.action = ""
         self.fight = skills.Skill(3)
@@ -118,7 +118,6 @@ class Monster(Character):
 class Tile(Object):
     ''' tile class '''
     def __init__(self, y, x, type_of, maxyx):
-        skeleton = {}
         self.maxyx = maxyx  # y,x
         self.x = x
         self.y = y
@@ -129,20 +128,20 @@ class Tile(Object):
         self.hp = 100
 
         if type_of == 0:
-            self.char = "#"
-            self.color = random.randint(52, 62)
+            self.char = "|"
+            self.color = random.randint(184, 187)
             self.blocking = True
         if type_of == 1:
             self.char = "Y"
-            self.color = random.randint(32, 54)
+            self.color = random.randint(40, 43)
             self.blocking = True
         if type_of == 2:
             self.char = "~"
-            self.color = random.randint(18, 22)
+            self.color = random.randint(24, 27)
             self.blocking = False
         else:
-            self.char = "."
-            self.color = 0
+            self.char = "#"
+            self.color = random.randint(240, 247)
             self.blocking = False
 
 

@@ -56,12 +56,13 @@ class Map(Level):
         self.y = 0
         self.h = l_h
         self.w = l_w
-        self.p1 = objects.Character(10, 10, "@", 0, [l_h, l_w])
+        self.p1 = objects.Character(10, 10, "@", [l_h, l_w])
+        self.p1.color = 0
         self.p1.hp = 30
         self.p1.max_hp = 30
         self.Map[self.y][self.x].characters.append(self.p1)
         for i in range(8):
-            self.Map[self.y][self.x].characters.append(objects.Monster(random.randint(0, self.h), random.randint(0, self.w), chr(random.randint(65, 100)), random.randint(1, 8), [self.h, self.w]))
+            self.Map[self.y][self.x].characters.append(objects.Monster(random.randint(0, self.h), random.randint(0, self.w), chr(random.randint(65, 100)), [self.h, self.w]))
 
     def newLevel(self):
         ''' makes a new level to map '''
@@ -71,5 +72,5 @@ class Map(Level):
             self.Map[self.y][self.x] = Level(self.h, self.w)
             self.Map[self.y][self.x].characters.append(self.p1)
             for i in range(8):
-                self.Map[self.y][self.x].characters.append(objects.Monster(random.randint(0, self.h), random.randint(0, self.w), chr(random.randint(65, 100)), random.randint(1, 8), [self.h, self.w]))
+                self.Map[self.y][self.x].characters.append(objects.Monster(random.randint(0, self.h), random.randint(0, self.w), chr(random.randint(65, 100)), [self.h, self.w]))
         return self.Map[self.y][self.x]
