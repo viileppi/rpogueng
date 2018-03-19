@@ -32,16 +32,16 @@ class Display:
             # draw
             stdscr.clear()
             del_list = []
-            for tile in self.lvl.wholevel["tiles"]:
+            for tile in self.lvl.tiles:
                 stdscr.addstr(tile.y, tile.x, tile.char, curses.color_pair(tile.color))
-            for index, char in enumerate(self.lvl.wholevel["characters"]):
+            for index, char in enumerate(self.lvl.characters):
                 char.move(self.lvl)
                 stdscr.addstr(char.y, char.x, char.char, curses.color_pair(char.color))
                 if char.alive == False:
                     del_list.append(index)
             for char in del_list:
-                self.lvl.wholevel["characters"].pop(char)
-            stdscr.addstr(0,0, action, curses.color_pair(1))
+                self.lvl.characters.pop(char)
+            stdscr.addstr(0,0, self.lvl.characters[0].action, curses.color_pair(1))
             stdscr.refresh()
             # input
             user_input = stdscr.getkey()

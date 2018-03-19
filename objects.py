@@ -12,6 +12,7 @@ class Object:
         self.char = c
         self.color = color
         self.alive = True
+        self.action = ""
 
     def position(self):
         ''' return position [y, x] '''
@@ -42,9 +43,11 @@ class Character(Object):
             self.y = self.old_y
             foo.alive = False
             foo.char = " "
+            self.action = "hulk smash"
         else:
             self.x = newx
             self.y = newy
+            self.action = ""
 
 class Monster(Character):
     ''' NPC-class '''
@@ -83,7 +86,6 @@ class Monster(Character):
 class Tile(Object):
     ''' tile class '''
     def __init__(self, y, x, type_of, maxyx):
-        self.types = ["basic", "structure", "plant", "water"]
         skeleton = {}
         self.maxyx = maxyx  # y,x
         self.x = x
@@ -91,15 +93,15 @@ class Tile(Object):
         self.blocking = True
         self.color = 0
         self.alive = False
-        if type_of == "structure":
+        if type_of == 0:
             self.char = "#"
             self.color = random.randint(52, 62)
             self.blocking = True
-        if type_of == "plant":
+        if type_of == 1:
             self.char = "Y"
             self.color = random.randint(32, 54)
             self.blocking = True
-        if type_of == "water":
+        if type_of == 2:
             self.char = "~"
             self.color = random.randint(18, 22)
             self.blocking = False
