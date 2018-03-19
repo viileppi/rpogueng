@@ -15,7 +15,9 @@ class Object:
         self.alive = True
         self.action = ""
         self.fight = skills.Skill(3)
+        self.max_hp = 10
         self.hp = 10
+        self.turns = 0
 
     def position(self):
         ''' return position [y, x] '''
@@ -31,6 +33,9 @@ class Character(Object):
     def move(self, level):
         ''' moves the instance and checks for blocking (bool)
             returns characters action (str) '''
+        self.turns += 1
+        if self.turns % 5 == 0:
+            self.hp = min(self.max_hp, self.hp + 0.1)
         self.old_x = self.x
         self.old_y = self.y
         newx = self.x
@@ -44,9 +49,10 @@ class Character(Object):
             # for testing-purpose change the character on collision
             self.x = self.old_x
             self.y = self.old_y
-            if self.fight.roll(foo.fight.limit):
-                foo.hp -= 2
-                self.action = "smack!"
+            a, b = self.fight.roll(foo.fight.limit)
+            if a:
+                foo.hp -= b
+                self.action = str(b) + " damage"
                 if foo.hp < 1:
                     foo.alive = False
                     foo.char = " "

@@ -27,7 +27,8 @@ class Skill:
     def roll(self, limit):
         ''' takes targets limit and tries to beat it
             returns true if beaten '''
-        if self.rll(self.dice) > limit:
-            return True
+        a = self.rll(self.dice)
+        if a > limit:
+            return True, a - limit
         else:
-            return False
+            return False, 0

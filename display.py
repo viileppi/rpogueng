@@ -41,8 +41,9 @@ class Display:
                     del_list.append(index)
             for char in del_list:
                 self.lvl.characters.pop(char)
-            stdscr.addstr(0,0, self.lvl.characters[0].action)
-            stdscr.addstr(1,0, str(self.lvl.characters[0].hp))
+            stdscr.addstr(2,0, self.lvl.characters[0].action)
+            stdscr.addstr(1,0, "HP:" + str(int(self.lvl.characters[0].hp)))
+            stdscr.addstr(0,0, str(self.Map.y) + ":" + str(self.Map.x))
             stdscr.refresh()
             # input
             user_input = stdscr.getkey()
@@ -51,6 +52,7 @@ class Display:
             except KeyError:
                 stdscr.addstr(0, 0, "Invalid key: " + user_input)
             self.lvl.characters[0].direction = direction
+
             if self.lvl.characters[0].x <= 1:
                 self.Map.x -= 1
                 self.lvl = self.Map.newLevel()
@@ -59,6 +61,7 @@ class Display:
                 self.Map.x += 1
                 self.lvl = self.Map.newLevel()
                 self.lvl.characters[0].x = 1
+
             if self.lvl.characters[0].y <= 1:
                 self.Map.y -= 1
                 self.lvl = self.Map.newLevel()
@@ -67,6 +70,7 @@ class Display:
                 self.Map.y += 1
                 self.lvl = self.Map.newLevel()
                 self.lvl.characters[0].y = 1
+
             direction = [0, 0]
             if not self.lvl.characters[0].alive:
                 for i in range(self.h):
