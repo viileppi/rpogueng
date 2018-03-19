@@ -16,13 +16,7 @@ def main(scr):
 
 WIDTH, HEIGHT = wrapper(main)
 
-lvl = level.Level(HEIGHT, WIDTH)
-
-p1 = objects.Character(10, 10, "@", 0, [HEIGHT, WIDTH])
-lvl.characters.append(p1)
-for i in range(8):
-    lvl.characters.append(objects.Monster(random.randint(0, HEIGHT), random.randint(0, WIDTH), chr(random.randint(65, 100)), random.randint(1, 8), [HEIGHT, WIDTH]))
-
+Map = level.Map(HEIGHT, WIDTH)
 
 keybinds = {}   # y  x
 keybinds["k"] = [-1, 0]
@@ -34,6 +28,6 @@ keybinds["u"] = [-1, 1]
 keybinds["b"] = [1, -1]
 keybinds["n"] = [1, 1]
 
-foo = Display(WIDTH, HEIGHT, keybinds, lvl, p1)
+foo = Display(WIDTH, HEIGHT, keybinds, Map)
 
 wrapper(foo.main)

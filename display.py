@@ -8,12 +8,12 @@ import level
 
 class Display:
     ''' foo '''
-    def __init__(self, w, h, keybinds, lvl, player):
+    def __init__(self, w, h, keybinds, lvl):
         self.w = w
         self.h = h
         self.keybinds = keybinds
-        self.lvl = lvl
-        self.player = player
+        self.Map = lvl
+        self.lvl = self.Map.Map[0][0]
 
     def main(self, stdscr):
         self.maxyx = stdscr.getmaxyx()
@@ -49,5 +49,21 @@ class Display:
                 direction = self.keybinds[user_input]
             except KeyError:
                 stdscr.addstr(0, 0, "Invalid key: " + user_input)
-            self.player.direction = direction
+            self.lvl.characters[0].direction = direction
+            if self.lvl.characters[0].x <= 1:
+                self.Map.x -= 1
+                self.lvl = self.Map.newLevel()
+                self.lvl.characters[0].x = self.lvl.characters[0].maxyx[1] - 1
+            if self.lvl.characters[0].x >= self.w:
+                self.Map.x += 1
+                self.lvl = self.Map.newLevel()
+                self.lvl.characters[0].x = 1
+            if self.lvl.characters[0].y <= 1:
+                self.Map.y -= 1
+                self.lvl = self.Map.newLevel()
+                self.lvl.characters[0].y = self.lvl.characters[0].maxyx[0] - 1
+            if self.lvl.characters[0].y >= self.h:
+                self.Map.y += 1
+                self.lvl = self.Map.newLevel()
+                self.lvl.characters[0].y = 1
             direction = [0, 0]
