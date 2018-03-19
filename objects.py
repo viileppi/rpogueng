@@ -1,4 +1,5 @@
 import random
+import skills
 
 class Object:
     ''' color = 1...6 '''
@@ -13,6 +14,8 @@ class Object:
         self.color = color
         self.alive = True
         self.action = ""
+        self.fight = skills.Skill(3)
+        self.hp = 10
 
     def position(self):
         ''' return position [y, x] '''
@@ -41,9 +44,15 @@ class Character(Object):
             # for testing-purpose change the character on collision
             self.x = self.old_x
             self.y = self.old_y
-            foo.alive = False
-            foo.char = " "
-            self.action = "hulk smash"
+            if self.fight.roll(foo.fight.limit):
+                foo.hp -= 2
+                self.action = "smack!"
+                if foo.hp < 1:
+                    foo.alive = False
+                    foo.char = " "
+                    self.action = "hulk smash"
+            else:
+                self.action = "missed..."
         else:
             self.x = newx
             self.y = newy
@@ -73,15 +82,32 @@ class Monster(Character):
         newy = min(self.maxyx[0], newy + self.direction[0])
         newy = max(0, newy)
         foo = level.blocking(newy, newx)
-        if foo != None:
-            # for testing-purpose change the character on collision
+        if foo != None and foo != self:
             self.x = self.old_x
             self.y = self.old_y
-            # if str(type(foo))[:18] == "<class 'objects.Mo":
-            #     foo.char = chr(ord(foo.char) + 1)
+            if self.fight.roll(foo.fight.limit):
+                foo.hp -= 2
+                self.action = "smack!"
+                if foo.hp < 1:
+                    foo.alive = False
+                    foo.char = " "
+                    self.action = "monster smash"
+            else:
+                self.action = "missed..."
         else:
             self.x = newx
             self.y = newy
+            self.action = ""
+
+# if foo != None:
+        #     # for testing-purpose change the character on collision
+        #     self.x = self.old_x
+        #     self.y = self.old_y
+        #     # if str(type(foo))[:18] == "<class 'objects.Mo":
+        #     #     foo.char = chr(ord(foo.char) + 1)
+        # else:
+        #     self.x = newx
+        #     self.y = newy
 
 class Tile(Object):
     ''' tile class '''
@@ -93,6 +119,9 @@ class Tile(Object):
         self.blocking = True
         self.color = 0
         self.alive = False
+        self.fight = skills.Skill(100)
+        self.hp = 100
+
         if type_of == 0:
             self.char = "#"
             self.color = random.randint(52, 62)

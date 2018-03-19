@@ -41,7 +41,8 @@ class Display:
                     del_list.append(index)
             for char in del_list:
                 self.lvl.characters.pop(char)
-            stdscr.addstr(0,0, self.lvl.characters[0].action, curses.color_pair(1))
+            stdscr.addstr(0,0, self.lvl.characters[0].action)
+            stdscr.addstr(1,0, str(self.lvl.characters[0].hp))
             stdscr.refresh()
             # input
             user_input = stdscr.getkey()
@@ -67,3 +68,9 @@ class Display:
                 self.lvl = self.Map.newLevel()
                 self.lvl.characters[0].y = 1
             direction = [0, 0]
+            if not self.lvl.characters[0].alive:
+                for i in range(self.h):
+                    stdscr.addstr(i, i, "GAME OVER!!!")
+                    stdscr.refresh()
+                    curses.napms(50)
+                user_input = "q"
