@@ -27,6 +27,13 @@ class Display:
         minimap.refresh()
         minimap.getkey()
 
+    def showHelp(self):
+        helpwin = curses.newwin(self.h, self.w, 0, 0)
+        helpwin.addstr("Movement:\ny k u\n\|/\nh- -l\n/|\\nb j n\n")
+        helpwin.refresh()
+        helpwin.getkey()
+
+
     def main(self, mainwin):
         stdscr = mainwin.subwin(self.h + 1, self.w + 1, 1, 0)
         statuswin = mainwin.subwin(1,self.w, 0, 0)
@@ -44,7 +51,6 @@ class Display:
         user_input = ""
         direction = [0, 0]
         action = "foo"
-        action_list = []
 
         while user_input != "q":
             # show actions
@@ -64,13 +70,15 @@ class Display:
                     del_list.append(index)
             # delete killed characters
             for char in del_list:
-                self.lvl.characters.pop(char)
+                try:
+                    self.lvl.characters.pop(char)
+                except IndexError:
+                    pass
             for meh in self.lvl.characters:
                 if meh.action != "":
-                    action_list.append(meh.action)
+                    logwin.addstr(meh.action + "\n")
+                    meh.action = ""
             # iterate action_list and put them in to logwin
-            for entry in action_list:
-                logwin.addstr(entry + "\n")
             statuswin.clear()
             statuswin.addstr(0,0, "HP:" + str(int(self.lvl.characters[0].hp)) + "|" + action)
             stdscr.border()
@@ -86,6 +94,7 @@ class Display:
                         self.showMap()
                     if direction[2] == "t":
                         self.lvl.characters[0].talk(self.lvl)
+                        logwin.addstr("@ talks with calming voice" + "\n")
             except KeyError:
                 stdscr.addstr(0, 0, "Invalid key: " + user_input)
             self.lvl.characters[0].direction = direction

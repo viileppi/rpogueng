@@ -1,10 +1,6 @@
 #!/usr/bin/python3
-import os
-import curses
 from curses import wrapper
 import pickle
-import objects
-import random
 import level
 from display import Display
 

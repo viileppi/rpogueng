@@ -100,6 +100,7 @@ class Monster(Character):
     ''' NPC-class '''
     def follow(self, level):
         player = level.wheres_waldo()
+        p1 = level.characters[0]
         foo = level.hostiles(self.y, self.x)
         if foo != None and abs(foo.y - self.y) < self.sens and abs(foo.x - self.x) < self.sens:
             if foo.y < self.y:
@@ -119,6 +120,10 @@ class Monster(Character):
                 self.direction[1] = -1
             if player[1] > self.x:
                 self.direction[1] = 1
+            if p1.hp < p1.max_hp:
+                p1.hp = min(p1.max_hp, p1.hp + 1)
+                self.hp -= 1
+                self.action = self.char + " generates HP for you!"
     def attack(self, level):
         player = level.wheres_waldo()
         if abs(player[0] - self.y) < self.sens and abs(player[1] - self.x) < self.sens:
@@ -197,7 +202,6 @@ class Monster(Character):
         else:
             self.x = newx
             self.y = newy
-            self.action = ""
 
 class Tile(Object):
     ''' tile class '''
