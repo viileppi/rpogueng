@@ -11,7 +11,7 @@ from display import Display
 #     return WIDTH, HEIGHT
 #
 # WIDTH, HEIGHT = wrapper(main)
-WIDTH, HEIGHT = 40, 20
+WIDTH, HEIGHT = 36, 20
 
 Map = level.Map(HEIGHT, WIDTH)
 
