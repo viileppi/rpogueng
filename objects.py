@@ -33,7 +33,6 @@ class Object:
                 self.reaction[key] = self.act[2]    # ignore
             elif r >= 9:
                 self.reaction[key] = self.act[3]    # like
-        self.reaction[-1] = "like"
         self.state = self.reaction[0]
 
     def position(self):
@@ -49,7 +48,7 @@ class Character(Object):
 
     def move(self, level):
         ''' moves the instance and checks for blocking (bool)
-            returns characters action (str) '''
+            returns old_y and old_x '''
         self.turns += 1
         if self.turns % 5 == 0:
             self.hp = min(self.max_hp, self.hp + 0.1)
@@ -63,17 +62,15 @@ class Character(Object):
         newy = max(0, newy)
         foo = level.blocking(newy, newx)
         if foo != None and foo != self:
-            # for testing-purpose change the character on collision
             self.x = self.old_x
             self.y = self.old_y
             a, b = self.fight.roll(foo.fight.limit)
-            #  self.state = self.reaction[-1]
+            foo.state = foo.reaction[-1]
             if a:
                 foo.hp -= b
                 self.action = self.char + " makes " + str(b) + " damage"
                 if foo.hp < 1:
                     foo.alive = False
-                    foo.char = " "
                     self.action = "hulk smash"
             else:
                 self.action = "missed..."
@@ -81,8 +78,10 @@ class Character(Object):
             self.x = newx
             self.y = newy
             self.action = ""
+        return self.old_y, self.old_x
 
     def talk(self, level):
+        self.action = "@ talks with calming voice"
         for y in range(-2, 2, 1):
             for x in range(-2, 2, 1):
                 newx = self.x
@@ -122,7 +121,7 @@ class Monster(Character):
                 self.direction[1] = 1
             if p1.hp < p1.max_hp:
                 p1.hp = min(p1.max_hp, p1.hp + 1)
-                self.hp -= 1
+                self.hp -= 2
                 self.action = self.char + " generates HP for you!"
     def attack(self, level):
         player = level.wheres_waldo()
@@ -153,13 +152,13 @@ class Monster(Character):
 
     def move(self, level):
         ''' moves the instance and checks for blocking (bool)
-            with added AI '''
+            with added AI, returns old_y and old_x '''
         if self.state == "fight":
             self.attack(level)
             self.color = 1
         if self.state == "like":
             self.follow(level)
-            self.color = 10
+            self.color = 2
         if self.state == "flee":
             self.flee(level)
             self.color = 3
@@ -181,11 +180,11 @@ class Monster(Character):
             self.y = self.old_y
             if self.state == "fight":
                 if self.fight.roll(foo.fight.limit):
+                    foo.state = foo.reaction[-1]
                     foo.hp -= 2
                     self.action = self.char + " hits " + foo.char
                     if foo.hp < 1:
                         foo.alive = False
-                        foo.char = " "
                         self.action = "killed"
                 else:
                     self.action = "missed..."
@@ -195,13 +194,13 @@ class Monster(Character):
                     self.action = "smack!"
                     if foo.hp < 1:
                         foo.alive = False
-                        foo.char = " "
                         self.action = "killed"
                 else:
                     self.action = "missed..."
         else:
             self.x = newx
             self.y = newy
+        return self.old_y, self.old_x
 
 class Tile(Object):
     ''' tile class '''

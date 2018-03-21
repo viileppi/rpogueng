@@ -60,6 +60,7 @@ class Map(Level):
         self.Map = {}
         self.Map[0] = {}
         self.Map[0][0] = Level(l_h, l_w)
+        self.num_levels = 3
         self.x = 0
         self.y = 0
         self.h = l_h
@@ -69,16 +70,17 @@ class Map(Level):
         self.p1.hp = 30
         self.p1.max_hp = 30
         self.Map[self.y][self.x].characters.append(self.p1)
-        for i in range(8):
+        for i in range(3):
             self.Map[self.y][self.x].characters.append(objects.Monster(random.randint(0, self.h), random.randint(0, self.w), chr(random.randint(65, 100)), [self.h, self.w]))
 
     def newLevel(self):
         ''' makes a new level to map '''
+        self.num_levels = self.num_levels * 1.5
         if self.Map.get(self.y) == None:
             self.Map[self.y] = {}
         if self.Map[self.y].get(self.x) == None:
             self.Map[self.y][self.x] = Level(self.h, self.w)
             self.Map[self.y][self.x].characters.append(self.p1)
-            for i in range(8):
+            for i in range(int(self.num_levels)):
                 self.Map[self.y][self.x].characters.append(objects.Monster(random.randint(0, self.h), random.randint(0, self.w), chr(random.randint(65, 100)), [self.h, self.w]))
         return self.Map[self.y][self.x]
