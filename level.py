@@ -50,6 +50,15 @@ class Level:
                 if abs(c.y - y) < 4 and abs(c.x - x) < 4:
                     return c
 
+    def anyHostiles(self):
+        ''' returns True if there's any hostiles '''
+        r = False
+        for i in range(1, len(self.characters), 1):
+            c = self.characters[i]
+            if c.state == "fight":
+                r = True
+        return r
+
     def wheres_waldo(self):
         ''' returns players coordinates [y, x] '''
         return self.characters[0].y, self.characters[0].x
@@ -75,7 +84,7 @@ class Map(Level):
 
     def newLevel(self):
         ''' makes a new level to map '''
-        self.num_levels = self.num_levels * 1.5
+        self.num_levels = self.num_levels + 1
         if self.Map.get(self.y) == None:
             self.Map[self.y] = {}
         if self.Map[self.y].get(self.x) == None:

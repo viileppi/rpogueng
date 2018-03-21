@@ -219,19 +219,15 @@ class Tile(Object):
 
         if type_of == 0:
             self.char = "|"
-            self.color = random.randint(184, 187)
             self.blocking = True
         if type_of == 1:
             self.char = "Y"
-            self.color = random.randint(40, 43)
             self.blocking = True
         if type_of == 2:
             self.char = "~"
-            self.color = random.randint(24, 27)
             self.blocking = False
         else:
             self.char = "#"
-            self.color = random.randint(240, 247)
             self.blocking = False
 
 
