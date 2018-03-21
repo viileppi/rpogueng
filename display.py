@@ -116,7 +116,6 @@ class Display:
                     pass
             statuswin.addstr("HP:" + str(int(self.lvl.characters[0].hp)))
             statuswin.noutrefresh()
-            stdscr.border()
             curses.doupdate()
             # input
             user_input = (stdscr.getch())
