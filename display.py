@@ -63,7 +63,7 @@ class Display:
 
         while user_input != "q":
             # show actions
-            stdscr.clear()
+            stdscr.clearok(1)
             logwin.clear()
             del_list = []
             # draw tiles
@@ -114,23 +114,19 @@ class Display:
             if self.lvl.characters[0].x <= 1:
                 self.Map.x -= 1
                 self.lvl = self.Map.newLevel()
-                stdscr.clear()
                 self.lvl.characters[0].x = self.lvl.characters[0].maxyx[1] - 1
             if self.lvl.characters[0].x >= self.w:
                 self.Map.x += 1
                 self.lvl = self.Map.newLevel()
-                stdscr.clear()
                 self.lvl.characters[0].x = 1
 
             if self.lvl.characters[0].y <= 1:
                 self.Map.y -= 1
                 self.lvl = self.Map.newLevel()
-                stdscr.clear()
                 self.lvl.characters[0].y = self.lvl.characters[0].maxyx[0] - 1
             if self.lvl.characters[0].y >= self.h:
                 self.Map.y += 1
                 self.lvl = self.Map.newLevel()
-                stdscr.clear()
                 self.lvl.characters[0].y = 1
 
             direction = [0, 0]
