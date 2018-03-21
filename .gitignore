@@ -99,3 +99,13 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+# custom rules
+.skills.py.swp
+2
+TODO
+colortest.py
+keytest.py
+level_editor.py
+synopsis_galileo
+testlevel.pickle
