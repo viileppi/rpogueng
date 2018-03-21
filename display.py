@@ -5,6 +5,7 @@ import pickle
 import objects
 import random
 import level
+from helper import showHelp
 
 class Display:
     ''' foo '''
@@ -33,35 +34,15 @@ class Display:
         minimap.clear()
         del minimap
 
-    def showHelp(self):
-        try:
-            f = open("help.txt", "r")
-            hjelp = []
-            for line in f:
-                hjelp.append(line)
-            f.close()
-            helpwin = curses.initscr()
-            try:
-                for line in hjelp:
-                    helpwin.addstr(line)
-            except curses.error:
-                pass
-            helpwin.refresh()
-            helpwin.getkey()
-            helpwin.clear()
-            helpwin.refresh()
-            del helpwin
-        except FileNotFoundError:
-            pass
-
-
     def main(self, mainwin):
-        self.showHelp()
+        showHelp(mainwin)
+        mainwin.vline(0, self.w + 1, "|", self.h)
+        mainwin.refresh()
         stdscr = mainwin.subwin(self.h + 1, self.w + 1, 1, 0)
         stdscr.idcok(False)
         stdscr.idlok(False)
         statuswin = mainwin.subwin(1,self.w, 0, 0)
-        logwin = mainwin.subpad(self.h, self.w, 1, self.w + 1)
+        logwin = mainwin.subpad(self.h, self.w, 1, self.w + 2)
         logwin.scrollok(True)
         self.maxyx = stdscr.getmaxyx()
         self.half_h = int(self.h / 2)
@@ -105,7 +86,7 @@ class Display:
                     pass
                 if char.alive == False or char.hp < 1:
                     del_list.append(index)
-                    logwin.addstr(char.char + " died...\n")
+                    logwin.addstr(char.name + " died...\n")
                     logwin.noutrefresh()
             # delete killed characters
             for char in del_list:

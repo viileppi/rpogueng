@@ -4,7 +4,7 @@ import skills
 class Object:
     ''' color = 1...6 '''
     def __init__(self, y, x, c, maxyx):
-        self.name = ""
+        self.name = c
         self.maxyx = maxyx  # y,x
         self.x = x
         self.y = y
@@ -39,9 +39,6 @@ class Object:
         ''' return position [y, x] '''
         return [self.y, self.x]
 
-    def suicide(self):
-        self.alive = False
-
 
 class Character(Object):
     ''' character class '''
@@ -68,8 +65,9 @@ class Character(Object):
             foo.state = foo.reaction[-1]
             if a:
                 foo.hp -= b
-                self.action = "You hit " + foo.char
+                self.action = "You hit " + foo.name
                 if foo.hp < 1:
+                    foo.die(level)
                     foo.alive = False
             else:
                 self.action = "missed..."
@@ -92,6 +90,10 @@ class Character(Object):
                 foo = level.blocking(newy, newx)
                 if foo != None and foo != self:
                     foo.state = foo.reaction[1]
+
+    def die(self, level):
+        ''' empty class for future use '''
+        pass
 
 
 class Monster(Character):
@@ -124,7 +126,7 @@ class Monster(Character):
                 self.hp -= 2
                 if self.hp < 1:
                     self.alive = False
-                self.action = self.char + " gives HP for you!"
+                self.action = self.name + " gives HP for you!"
     def attack(self, level):
         player = level.wheres_waldo()
         if abs(player[0] - self.y) < self.sens and abs(player[1] - self.x) < self.sens:
@@ -180,29 +182,49 @@ class Monster(Character):
         if foo != None and foo != self:
             self.x = self.old_x
             self.y = self.old_y
-            if self.state == "fight" and foo.name != "tile":
+            if self.state == "fight" and foo.name != "tile" and foo.char != "*":
                 if self.fight.roll(foo.fight.limit):
                     foo.state = foo.reaction[-1]
                     foo.hp -= 2
-                    self.action = self.char + " hits " + foo.char
+                    self.action = self.name + " hits " + foo.name
                     if foo.hp < 1:
+                        foo.die(level)
                         foo.alive = False
                         self.action = "killed"
                 else:
-                    self.action = self.char + " missed..."
+                    self.action = self.name + " missed..."
             if self.state == "like" and foo.char != "@":
                 if self.fight.roll(foo.fight.limit):
                     foo.hp -= 2
-                    self.action = "smack!"
                     if foo.hp < 1:
+                        foo.die(level)
                         foo.alive = False
                         self.action = "killed"
                 else:
                     self.action = "missed..."
+            if foo.name == "tile":
+                self.hp -= 1
+                self.action = self.name + " smashes to the wall"
         else:
             self.x = newx
             self.y = newy
         return self.old_y, self.old_x
+
+class SausageMonster(Monster):
+    ''' from a movie I saw... '''
+    def die(self, level):
+        a = SausageMonster(self.y, self.x, "*", self.maxyx)
+        a.hp = 1
+        a.name = "Sausage monster"
+        a.action = "The alien split into two new aliens!"
+        b = SausageMonster(self.y + 1, self.x + 1, "*", self.maxyx)
+        b.hp = 1
+        b.name = "Sausage monster"
+        level.characters.append(a)
+        level.characters.append(b)
+
+    def follow(self, level):
+        pass
 
 class Tile(Object):
     ''' tile class '''
