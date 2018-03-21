@@ -55,13 +55,11 @@ class Display:
     def main(self, mainwin):
         self.showHelp()
         stdscr = mainwin.subwin(self.h + 1, self.w + 1, 1, 0)
-        stdscr.idcok(True)
-        stdscr.idlok(1)
+        stdscr.idcok(False)
+        stdscr.idlok(False)
         statuswin = mainwin.subwin(1,self.w, 0, 0)
-        logwin = mainwin.subwin(self.h + 1, self.w + 1, 1, self.w + 1)
+        logwin = mainwin.subpad(self.h, self.w, 1, self.w + 1)
         logwin.scrollok(True)
-        logwin.idcok(True)
-        logwin.idlok(1)
         self.maxyx = stdscr.getmaxyx()
         self.half_h = int(self.h / 2)
         self.half_w = int(self.w / 2)
@@ -76,47 +74,46 @@ class Display:
         curses.curs_set(0)
         user_input = ""
         direction = [0, 0]
-        action = ""
+        action = "\n"
         action_list = []
 
         while user_input != ord("q"):
             # show actions
-            stdscr.clearok(1)
-            logwin.clearok(1)
+            stdscr.erase()
             del_list = []
+            statuswin.erase()
             # draw tiles
             for tile in self.lvl.tiles:
                 stdscr.addstr(tile.y, tile.x, tile.char, curses.color_pair(tile.color))
+                stdscr.noutrefresh()
             # draw characters
             for index, char in enumerate(self.lvl.characters):
                 erase_y, erase_x = char.move(self.lvl)
                 char.direction = [0, 0]
                 if char.action != "":
-                    action_list.append(char.action)
+                    logwin.addstr(char.action + "\n")
+                    logwin.noutrefresh()
                     char.action = ""
                 try:
-                    stdscr.addstr(erase_y, erase_x, " ")
+                    # stdscr.addstr(erase_y, erase_x, " ")
                     stdscr.addstr(char.y, char.x, char.char, curses.color_pair(char.color))
+                    stdscr.noutrefresh()
                 except curses.error:
                     pass
                 if char.alive == False or char.hp < 1:
                     del_list.append(index)
-                    action_list.append(char.char + " died...")
+                    logwin.addstr(char.char + " died...\n")
+                    logwin.noutrefresh()
             # delete killed characters
             for char in del_list:
                 try:
-                    stdscr.delch(self.lvl.characters[char].y, self.lvl.characters[char].x)
+                    # stdscr.delch(self.lvl.characters[char].y, self.lvl.characters[char].x)
                     self.lvl.characters.pop(char)
                 except IndexError:
                     pass
-            # iterate action_list and put them in to logwin
-            for action in action_list:
-                logwin.addstr(action + "\n")
-            statuswin.addstr(0,0, "HP:" + str(int(self.lvl.characters[0].hp)))
-            stdscr.border()
-            stdscr.noutrefresh()
+            statuswin.addstr("HP:" + str(int(self.lvl.characters[0].hp)))
             statuswin.noutrefresh()
-            logwin.noutrefresh()
+            stdscr.border()
             curses.doupdate()
             # input
             user_input = (stdscr.getch())
@@ -127,8 +124,11 @@ class Display:
                         self.showMap()
                     if direction[2] == "t":
                         self.lvl.characters[0].talk(self.lvl)
+                        logwin.addstr("You talk\n")
+                        logwin.noutrefresh()
             except KeyError:
-                stdscr.addstr(0, 0, "Invalid key: " + chr(user_input))
+                logwin.addstr("Invalid key: " + chr(user_input) + "\n", curses.color_pair(1))
+                logwin.noutrefresh()
             self.lvl.characters[0].direction = direction
             # move to new levels or make such
             if self.lvl.characters[0].x <= 1:
@@ -160,6 +160,6 @@ class Display:
             # check if player is still alive
             if not self.lvl.characters[0].alive:
                 stdscr.addstr(self.half_h, self.half_w, "GAME OVER!!!")
-                stdscr.noutrefresh()
-                curses.napms(2000)
-                user_input = "q"
+                stdscr.refresh()
+                stdscr.getkey()
+                user_input = ord("q")

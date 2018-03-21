@@ -68,10 +68,9 @@ class Character(Object):
             foo.state = foo.reaction[-1]
             if a:
                 foo.hp -= b
-                self.action = self.char + " makes " + str(b) + " damage"
+                self.action = "You hit " + foo.char
                 if foo.hp < 1:
                     foo.alive = False
-                    self.action = "hulk smash"
             else:
                 self.action = "missed..."
         else:
@@ -125,7 +124,7 @@ class Monster(Character):
                 self.hp -= 2
                 if self.hp < 1:
                     self.alive = False
-                self.action = self.char + " generates HP for you!"
+                self.action = self.char + " gives HP for you!"
     def attack(self, level):
         player = level.wheres_waldo()
         if abs(player[0] - self.y) < self.sens and abs(player[1] - self.x) < self.sens:

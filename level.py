@@ -17,9 +17,9 @@ class Level:
                 a = None
                 row.append(a)
             self.level.append(row)
-        self.y = int(h / 2)
-        self.x = int(w / 2)
-        for i in range(int(h * w / 8)):
+        self.y = int(h / 2) + random.randint(0, 8)
+        self.x = int(w / 2) + random.randint(0, 8)
+        for i in range(int(h * w / random.randint(3, 15))):
             # generate tiles from color range 33...64
             self.level[y][x] = objects.Tile(y, x, random.randint(0, 3), [self.h, self.w])
             self.level[y][x].blocking = True
