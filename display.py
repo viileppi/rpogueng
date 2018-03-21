@@ -34,22 +34,25 @@ class Display:
         del minimap
 
     def showHelp(self):
-        f = open("help.txt", "r")
-        hjelp = []
-        for line in f:
-            hjelp.append(line)
-        f.close()
-        helpwin = curses.initscr()
         try:
-            for line in hjelp:
-                helpwin.addstr(line)
-        except curses.error:
+            f = open("help.txt", "r")
+            hjelp = []
+            for line in f:
+                hjelp.append(line)
+            f.close()
+            helpwin = curses.initscr()
+            try:
+                for line in hjelp:
+                    helpwin.addstr(line)
+            except curses.error:
+                pass
+            helpwin.refresh()
+            helpwin.getkey()
+            helpwin.clear()
+            helpwin.refresh()
+            del helpwin
+        except FileNotFoundError:
             pass
-        helpwin.refresh()
-        helpwin.getkey()
-        helpwin.clear()
-        helpwin.refresh()
-        del helpwin
 
 
     def main(self, mainwin):
