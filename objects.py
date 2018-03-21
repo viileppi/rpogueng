@@ -17,7 +17,7 @@ class Object:
         self.fight = skills.Skill(3)
         self.max_hp = 10
         self.hp = 10
-        self.sens = random.randint(8, 22)
+        self.sens = random.randint(5, 12)
         self.turns = 0
         self.reaction = {-1: None,
                          0: None,
@@ -82,8 +82,8 @@ class Character(Object):
 
     def talk(self, level):
         self.action = "@ talks with calming voice"
-        for y in range(-2, 2, 1):
-            for x in range(-2, 2, 1):
+        for y in range(-3, 3, 1):
+            for x in range(-3, 3, 1):
                 newx = self.x
                 newy = self.y
                 newx = min(self.maxyx[1], newx + x)
@@ -119,9 +119,12 @@ class Monster(Character):
                 self.direction[1] = -1
             if player[1] > self.x:
                 self.direction[1] = 1
+        if abs(player[0] - self.y) < 3 and abs(player[1] - self.x) < 3:
             if p1.hp < p1.max_hp:
                 p1.hp = min(p1.max_hp, p1.hp + 1)
                 self.hp -= 2
+                if self.hp < 1:
+                    self.alive = False
                 self.action = self.char + " generates HP for you!"
     def attack(self, level):
         player = level.wheres_waldo()
@@ -178,7 +181,7 @@ class Monster(Character):
         if foo != None and foo != self:
             self.x = self.old_x
             self.y = self.old_y
-            if self.state == "fight":
+            if self.state == "fight" and foo.name != "tile":
                 if self.fight.roll(foo.fight.limit):
                     foo.state = foo.reaction[-1]
                     foo.hp -= 2
@@ -187,7 +190,7 @@ class Monster(Character):
                         foo.alive = False
                         self.action = "killed"
                 else:
-                    self.action = "missed..."
+                    self.action = self.char + " missed..."
             if self.state == "like" and foo.char != "@":
                 if self.fight.roll(foo.fight.limit):
                     foo.hp -= 2
@@ -205,6 +208,7 @@ class Monster(Character):
 class Tile(Object):
     ''' tile class '''
     def __init__(self, y, x, type_of, maxyx):
+        self.name = "tile"
         self.maxyx = maxyx  # y,x
         self.x = x
         self.y = y

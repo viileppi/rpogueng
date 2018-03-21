@@ -34,12 +34,21 @@ class Display:
         del minimap
 
     def showHelp(self):
-        helpwin = curses.newwin(self.h, self.w, 0, 0)
-        helpwin.addstr("\nMovement:\ny k u\n \\|/\nh- -l\n /|\\\nb j n\n")
-        helpwin.addstr("\n't' to talk\n'm' for map\n")
-        helpwin.addstr("\nPress a key to continue")
+        f = open("help.txt", "r")
+        hjelp = []
+        for line in f:
+            hjelp.append(line)
+        f.close()
+        helpwin = curses.initscr()
+        try:
+            for line in hjelp:
+                helpwin.addstr(line)
+        except curses.error:
+            pass
         helpwin.refresh()
         helpwin.getkey()
+        helpwin.clear()
+        helpwin.refresh()
         del helpwin
 
 
@@ -70,7 +79,7 @@ class Display:
         action = ""
         action_list = []
 
-        while user_input != "q":
+        while user_input != ord("q"):
             # show actions
             stdscr.clearok(1)
             logwin.clearok(1)
@@ -96,6 +105,7 @@ class Display:
             # delete killed characters
             for char in del_list:
                 try:
+                    stdscr.delch(self.lvl.characters[char].y, self.lvl.characters[char].x)
                     self.lvl.characters.pop(char)
                 except IndexError:
                     pass
@@ -109,7 +119,7 @@ class Display:
             logwin.noutrefresh()
             curses.doupdate()
             # input
-            user_input = stdscr.getkey()
+            user_input = (stdscr.getch())
             try:
                 direction = self.keybinds[user_input]
                 if len(direction) == 3:
@@ -118,7 +128,7 @@ class Display:
                     if direction[2] == "t":
                         self.lvl.characters[0].talk(self.lvl)
             except KeyError:
-                stdscr.addstr(0, 0, "Invalid key: " + user_input)
+                stdscr.addstr(0, 0, "Invalid key: " + chr(user_input))
             self.lvl.characters[0].direction = direction
             # move to new levels or make such
             if self.lvl.characters[0].x <= 1:

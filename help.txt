@@ -1,0 +1,24 @@
+RPOGUENG - the testgame
+
+You are exploring a previously unknown planet,
+which is populated with all sorts of creatures.
+
+Your mission is to make the red hostile aliens
+non-hostile. This can be accomplished by either
+talking to them (press 't') or in some cases
+by hitting them... even to the death if needed.
+
+To view the map, press 'm'. The map will show
+areas you have explored. Areas with hostile 
+aliens are shown in red. Press 'q' to quit.
+
+Friendly green aliens will give you their HP
+if you're wounded and they'll fight for you.
+
+To move, use following keyset:
+
+ y  k  u
+  \ | /
+h - @ - l
+  / | \
+ b  j  n
