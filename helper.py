@@ -1,5 +1,6 @@
 def showHelp(scr):
-    l = [ "RPOGUENG - the testgame\n",
+    l = [ "\nRPOGUENG - the testgame\n",
+        "\n https://github.com/viileppi/rpogueng \n",
         "You are exploring a previously unknown planet,",
         "which is populated with all sorts of creatures.\n",
         "Your mission is to make the red hostile aliens",
@@ -11,7 +12,7 @@ def showHelp(scr):
         "aliens are shown in red. Press 'q' to quit.\n",
         "Friendly green aliens will give you their HP",
         "if you're wounded and they'll fight for you.\n",
-        "To move, use following keyset:\n",
+        "To move, use arrow keys or following keyset:\n",
         " y  k  u",
         "  \\ | /",
         "h - @ - l",

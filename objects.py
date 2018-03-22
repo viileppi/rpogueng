@@ -75,7 +75,6 @@ class Character(Object):
             self.x = newx
             self.y = newy
             self.action = ""
-        return self.old_y, self.old_x
 
     def talk(self, level):
         self.action = "@ talks with calming voice"
@@ -92,8 +91,16 @@ class Character(Object):
                     foo.state = foo.reaction[1]
 
     def die(self, level):
-        ''' empty class for future use '''
-        pass
+        q = level.wheres_waldo()
+        p = q[0] + q[1]
+        m = self.x + self.y
+        if abs(p - m) < 2 and self.state == "like":
+            a = SausageMonster(self.y, self.x, "*", self.maxyx)
+            a.hp = 1
+            a.name = "Sausage monster"
+            a.action = "Alien rises from the death!"
+            a.color = 5
+            level.characters.append(a)
 
 
 class Monster(Character):
@@ -125,6 +132,7 @@ class Monster(Character):
                 p1.hp = min(p1.max_hp, p1.hp + 1)
                 self.hp -= 2
                 if self.hp < 1:
+                    self.die(level)
                     self.alive = False
                 self.action = self.name + " gives HP for you!"
     def attack(self, level):
@@ -208,7 +216,6 @@ class Monster(Character):
         else:
             self.x = newx
             self.y = newy
-        return self.old_y, self.old_x
 
 class SausageMonster(Monster):
     ''' from a movie I saw... '''
@@ -216,15 +223,35 @@ class SausageMonster(Monster):
         a = SausageMonster(self.y, self.x, "*", self.maxyx)
         a.hp = 1
         a.name = "Sausage monster"
-        a.action = "The alien split into two new aliens!"
+        a.action = "The sausage moster split into two new monsters"
+        a.color = 5
         b = SausageMonster(self.y + 1, self.x + 1, "*", self.maxyx)
         b.hp = 1
         b.name = "Sausage monster"
+        b.color = 5
         level.characters.append(a)
         level.characters.append(b)
 
-    def follow(self, level):
-        pass
+    def move(self, level):
+        self.direction[0] = random.randint(-1, 1)
+        self.direction[1] = random.randint(-1, 1)
+        self.old_x = self.x
+        self.old_y = self.y
+        newx = self.x
+        newy = self.y
+        newx = min(self.maxyx[1], newx + self.direction[1])
+        newx = max(0, newx)
+        newy = min(self.maxyx[0], newy + self.direction[0])
+        newy = max(0, newy)
+        foo = level.blocking(newy, newx)
+        if foo != None and foo != self:
+            self.x = self.old_x
+            self.y = self.old_y
+        else:
+            self.x = newx
+            self.y = newy
+
+            
 
 class Tile(Object):
     ''' tile class '''

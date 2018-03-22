@@ -16,21 +16,22 @@ WIDTH, HEIGHT = 36, 20
 
 Map = level.Map(HEIGHT, WIDTH)
 keybinds = {}   # y  x
-keybinds[int(curses.KEY_UP)] = [-1, 0]
-keybinds[int(curses.KEY_DOWN)] = [1, 0]
-keybinds[int(curses.KEY_LEFT)] = [0, -1]
-keybinds[int(curses.KEY_RIGHT)] = [0, 1]
-keybinds[ord("k")] = [-1, 0]
-keybinds[ord("j")] = [1, 0]
-keybinds[ord("h")] = [0, -1]
-keybinds[ord("l")] = [0, 1]
-keybinds[ord("y")] = [-1, -1]
-keybinds[ord("u")] = [-1, 1]
-keybinds[ord("b")] = [1, -1]
-keybinds[ord("n")] = [1, 1]
-keybinds[ord(".")] = [0, 0]
-keybinds[ord("m")] = [0, 0, "m"]
-keybinds[ord("t")] = [0, 0, "t"]
+keybinds["KEY_UP"] = [-1, 0]
+keybinds["KEY_DOWN"] = [1, 0]
+keybinds["KEY_LEFT"] = [0, -1]
+keybinds["KEY_RIGHT"] = [0, 1]
+keybinds[("k")] = [-1, 0]
+keybinds[("j")] = [1, 0]
+keybinds[("h")] = [0, -1]
+keybinds[("l")] = [0, 1]
+keybinds[("y")] = [-1, -1]
+keybinds[("u")] = [-1, 1]
+keybinds[("b")] = [1, -1]
+keybinds[("n")] = [1, 1]
+keybinds[(".")] = [0, 0]
+keybinds[("m")] = [0, 0, "m"]
+keybinds[("t")] = [0, 0, "t"]
+keybinds[("?")] = [0, 0, "?"]
 
 foo = Display(WIDTH, HEIGHT, keybinds, Map)
 
